@@ -8,6 +8,10 @@ export const Container = styled.div`
   justify-content: space-between;
   align-items: center;
   margin: 0 auto;
+
+  img.logo {
+    cursor: pointer;
+  }
 `;
 
 export const Row = styled.div`
@@ -56,7 +60,7 @@ export const Menu = styled.a`
 export const MenuRight = styled.a`
   font-family: "Open Sans", sans-serif;
   font-style: normal;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 25px;
   color: #ffffff;
   margin-right: 12px;

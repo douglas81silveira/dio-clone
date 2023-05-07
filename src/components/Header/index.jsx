@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   BuscarInputContainer,
@@ -14,11 +15,17 @@ import { Button } from "../Button";
 import logo from "../../assets/logo-dio.svg";
 
 const Header = ({ autenticado }) => {
+  const navigate = useNavigate();
   return (
     <Wrapper>
       <Container>
         <Row>
-          <img src={logo} alt="Logo da dio" />
+          <img
+            className="logo"
+            src={logo}
+            alt="Logo da dio"
+            onClick={() => navigate("/")}
+          />
           {autenticado ? (
             <>
               <BuscarInputContainer>
@@ -34,9 +41,11 @@ const Header = ({ autenticado }) => {
             <UserPicture src="https://avatars.githubusercontent.com/u/106452799?v=4" />
           ) : (
             <>
-              <MenuRight href="#">Home</MenuRight>
-              <Button title="Entrar" />
-              <Button title="Cadastrar" />
+              <MenuRight href="#" onClick={() => navigate("/")}>
+                Home
+              </MenuRight>
+              <Button title="Entrar" onClick={() => navigate("/login")} />
+              <Button title="Cadastrar" onClick={() => navigate("/register")} />
             </>
           )}
         </Row>

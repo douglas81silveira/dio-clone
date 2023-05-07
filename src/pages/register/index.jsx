@@ -1,37 +1,37 @@
-import { useNavigate } from "react-router-dom";
+import React from "react";
 import { useForm } from "react-hook-form";
-
-import { api } from "../../services/api";
-
+import { useNavigate } from "react-router-dom";
+import { MdEmail, MdLock, MdPerson } from "react-icons/md";
 import Header from "../../components/Header";
 import {
-  Container,
-  Title,
   Column,
-  CriarText,
-  EsqueciText,
-  SubtitleLogin,
+  Container,
+  LoginText,
   Row,
-  TitleLogin,
+  SubtitleRegister,
+  Title,
+  TitleRegister,
   Wrapper,
 } from "./styles";
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
-import { MdEmail, MdLock } from "react-icons/md";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
+import { api } from "../../services/api";
+import { HttpStatusCode } from "axios";
+
 const schema = yup.object({
-  email: yup.string().email("E-mail inválido!").required("Campo obrigatório"),
+  nome: yup.string().required("Campo obrigatório."),
+  email: yup.string().email("E-mail inválido!").required("Campo obrigatório."),
   password: yup
     .string()
     .min("3", "No mínimo 3 caracteres!")
     .required("Campo obrigatório"),
 });
 
-const Login = () => {
+const Register = () => {
   const navigate = useNavigate();
-
   const {
     control,
     handleSubmit,
@@ -42,17 +42,22 @@ const Login = () => {
   });
 
   const onSubmit = async (formData) => {
-    try {
-      const { data } = await api.get(
-        `users?email=${formData.email}&senha=${formData.password}`
-      );
-      if (data.length === 1) {
-        navigate("/feed");
-      } else {
-        alert("Email ou senha inválido!");
-      }
-    } catch {
-      alert("Houve um erro, tente novamente!");
+    const { data } = await api.get(`users?email=${formData.email}`);
+    if (data.length > 0) {
+      alert("E-mail já cadastrado!");
+    } else {
+      await api
+        .post("users", formData)
+        .then((response) => {
+          if (
+            response.status === HttpStatusCode.Ok ||
+            response.status === HttpStatusCode.Created
+          ) {
+            alert(`${formData.email} cadastrado com sucesso!`);
+            navigate("/feed");
+          }
+        })
+        .catch((err) => alert(`Erro: ${err}`));
     }
   };
 
@@ -68,36 +73,43 @@ const Login = () => {
         </Column>
         <Column>
           <Wrapper>
-            <TitleLogin>Faça seu cadastro</TitleLogin>
-            <SubtitleLogin>Faça seu login e make the change._</SubtitleLogin>
+            <TitleRegister>Comece agora grátis</TitleRegister>
+            <SubtitleRegister>
+              Crie sua conta e make the change._
+            </SubtitleRegister>
             <form onSubmit={handleSubmit(onSubmit)}>
               <Input
-                name="email"
+                name="nome"
+                placeholder="Nome completo"
                 control={control}
+                errorMessage={errors?.nome?.message}
+                leftIcon={<MdPerson />}
+              />
+              <Input
+                name="email"
                 placeholder="E-mail"
+                control={control}
                 errorMessage={errors?.email?.message}
                 leftIcon={<MdEmail />}
               />
               <Input
                 name="password"
+                placeholder="Password"
                 control={control}
-                placeholder="Senha"
                 errorMessage={errors?.password?.message}
                 leftIcon={<MdLock />}
-                type="password"
               />
               <Button
-                title="Entrar"
+                title="Criar minha conta"
                 variant="secondary"
-                // onClick={handleClickSignIn}
                 type="submit"
               />
             </form>
             <Row>
-              <EsqueciText>Esqueci minha senha</EsqueciText>
-              <CriarText onClick={() => navigate("/register")}>
-                Criar conta
-              </CriarText>
+              Já tenho conta.&nbsp;
+              <LoginText onClick={() => navigate("/login")}>
+                Fazer login
+              </LoginText>
             </Row>
           </Wrapper>
         </Column>
@@ -106,4 +118,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

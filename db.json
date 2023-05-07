@@ -11,6 +11,12 @@
       "name": "José Silva",
       "email": "jose@email.com",
       "senha": "123456"
+    },
+    {
+      "nome": "douglas2",
+      "email": "douglas2@email.com",
+      "password": "123456",
+      "id": 3
     }
   ]
 }

@@ -10,6 +10,7 @@ export const ButtonContainer = styled.button`
   width: 100%;
   border: 1px solid #000000;
   padding: 5px;
+  cursor: pointer;
 
   ${({ variant }) =>
     variant !== "primary" &&
